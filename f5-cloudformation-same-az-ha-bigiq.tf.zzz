@@ -1,0 +1,41 @@
+resource "aws_cloudformation_stack" "f5-cluster-across-az-ha" {
+  name         = "ha-${var.emailidsan}-${aws_vpc.terraform-vpc.id}"
+  capabilities = ["CAPABILITY_IAM"]
+  /* 
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "lab-cleanup"
+  }
+  */
+  parameters = {
+    #NETWORKING CONFIGURATION
+
+    Vpc                 = aws_vpc.terraform-vpc.id
+    managementSubnetAz1 = aws_subnet.f5-management-a.id
+    subnet1Az1          = aws_subnet.public-a.id
+    managementSubnetAz2 = aws_subnet.f5-management-b.id
+    subnet1Az2          = aws_subnet.public-b.id
+    provisionPublicIP   = "Yes"
+
+    #INSTANCE CONFIGURATION
+
+    imageName               = "AdvancedWaf25Mbps"
+    instanceType            = "m5.xlarge"
+    restrictedSrcAddress    = "0.0.0.0/0"
+    sshKey                  = var.aws_keypair
+    restrictedSrcAddressApp = "0.0.0.0/0"
+    ntpServer               = "0.pool.ntp.org"
+    bigIpModules            = "asm:nominal,avr:nominal,fps:nominal,ilx:nominal"
+
+    #TAGS
+
+    application = "f5app"
+    environment = "f5env"
+    group       = "ltm"
+    owner       = "f5owner"
+    costcenter  = "f5costcenter"
+  }
+
+  #CloudFormation templates triggered from Terraform must be hosted on AWS S3. Experimental hosted in non-canonical S3 bucket.
+  template_url = "https://s3.amazonaws.com/f5-public-cloud/f5-existing-stack-across-az-cluster-payg-2nic-bigip_v5.2.1.template"
+}

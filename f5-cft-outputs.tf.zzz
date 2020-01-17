@@ -1,0 +1,19 @@
+output "Bigip1ManagementEipAddress"{
+  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1ManagementEipAddress"]}"
+}
+
+output "Bigip1Url"{
+  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1Url"]}"
+}
+
+output "Bigip1VipEipAddress"{
+  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1VipEipAddress"]}"
+}
+
+output "Bigip2ManagementEipAddress"{
+  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip2ManagementEipAddress"]}"
+}
+
+output "Bigip2Url"{
+  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip2Url"]}"
+}
