@@ -1,19 +1,54 @@
-output "Bigip1ManagementEipAddress"{
-  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1ManagementEipAddress"]}"
+data "aws_cloudformation_stack" "f5-cluster-across-az-ha" {
+  name = "BIGIP-Across-Az-Cluster-2nic-PAYG"
 }
 
-output "Bigip1Url"{
-  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1Url"]}"
+data "aws_network_interface" "bigip1_traffic" {
+id = data.aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1subnet1Az1Interface"]
 }
 
-output "Bigip1VipEipAddress"{
-  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1VipEipAddress"]}"
+data "aws_network_interface" "bigip2_traffic" {
+id = data.aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip2subnet1Az2Interface"]
 }
 
-output "Bigip2ManagementEipAddress"{
-  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip2ManagementEipAddress"]}"
+# RENDER TEMPLATE FILE
+
+data "template_file" "postman" {
+  depends_on = [null_resource.ecdsa_certs]
+template = file("./postman_template.json")
+vars = { 
+    AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+    AWS_ACCESS_KEY_ID = var.AWS_ACCESS_KEY_ID
+    BIGIP_ADMIN = var.bigip_admin
+    BIGIP_ADMIN_PASSWORD = var.bigip_admin_password
+    BIGIP1_MGMT_IP_ADDRESS = data.aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1ManagementEipAddress"]
+    BIGIP2_MGMT_IP_ADDRESS = data.aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip2ManagementEipAddress"]
+    BIGIP1_MGMT_PRIVATE_ADDRESS = data.aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1ManagementInterfacePrivateIp"]
+    BIGIP2_MGMT_PRIVATE_ADDRESS = data.aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip2ManagementInterfacePrivateIp"]
+    BIGIP1_TRAFFIC_PRIVATE_ADDRESS = data.aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip1ExternalInterfacePrivateIp"]
+    BIGIP2_TRAFFIC_PRIVATE_ADDRESS = data.aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip2ExternalInterfacePrivateIp"]
+    WEB1_PRIVATE_IP_ADDRESS = aws_instance.example-a.private_ip
+    WEB2_PRIVATE_IP_ADDRESS = aws_instance.example-b.private_ip
+    BIGIP1_EXAMPLE01_ADDRESS = data.aws_network_interface.bigip1_traffic.private_ips[1]
+    BIGIP2_EXAMPLE01_ADDRESS = data.aws_network_interface.bigip2_traffic.private_ips[1]
+    EXAMPLE01A_ECDSA_CERT = fileexists("example01a.f5lab.dev.cert") ? file("example01a.f5lab.dev.cert") : "null"
+    EXAMPLE01A_ECDSA_KEY = fileexists("example01a.f5lab.dev.key") ? file("example01a.f5lab.dev.key") : "null"
+    EXAMPLE01B_ECDSA_CERT = fileexists("example01b.f5lab.dev.cert") ? file("example01b.f5lab.dev.cert") : "null"
+    EXAMPLE01B_ECDSA_KEY = fileexists("example01b.f5lab.dev.key") ? file("example01b.f5lab.dev.key") : "null"
+}
 }
 
-output "Bigip2Url"{
-  value = "${aws_cloudformation_stack.f5-cluster-across-az-ha.outputs["Bigip2Url"]}"
+resource "local_file" "postman_rendered" {
+  depends_on = [null_resource.ecdsa_certs]
+content = data.template_file.postman.rendered
+filename = "postman_rendered.json"
+}
+
+resource "null_resource" "ecdsa_certs" {
+    provisioner "local-exec" {
+    command = "create-ecdsa-certs.sh"
+  }
+}
+
+output "BIGIP-Across-Az-Cluster-2nic-PAYG_outputs"{
+  value = data.aws_cloudformation_stack.f5-cluster-across-az-ha.outputs
 }

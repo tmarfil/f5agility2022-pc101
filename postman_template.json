@@ -82,53 +82,13 @@
 			"enabled": true
 		},
 		{
-			"key": "bigip1_default_route",
-			"value": "${BIGIP1_DEFAULT_ROUTE}",
-			"enabled": true
-		},
-		{
-			"key": "bigip2_default_route",
-			"value": "${BIGIP2_DEFAULT_ROUTE}",
-			"enabled": true
-		},
-		{
 			"key": "bigip1_example01_address",
 			"value": "${BIGIP1_EXAMPLE01_ADDRESS}",
 			"enabled": true
 		},
 		{
-			"key": "bigip1_example02_address",
-			"value": "${BIGIP1_EXAMPLE02_ADDRESS}",
-			"enabled": true
-		},
-		{
-			"key": "bigip1_example03_address",
-			"value": "${BIGIP1_EXAMPLE03_ADDRESS}",
-			"enabled": true
-		},
-		{
-			"key": "bigip1_example04_address",
-			"value": "${BIGIP1_EXAMPLE04_ADDRESS}",
-			"enabled": true
-		},
-		{
 			"key": "bigip2_example01_address",
 			"value": "${BIGIP2_EXAMPLE01_ADDRESS}",
-			"enabled": true
-		},
-		{
-			"key": "bigip2_example02_address",
-			"value": "${BIGIP2_EXAMPLE02_ADDRESS}",
-			"enabled": true
-		},
-		{
-			"key": "bigip2_example03_address",
-			"value": "${BIGIP2_EXAMPLE03_ADDRESS}",
-			"enabled": true
-		},
-		{
-			"key": "bigip2_example04_address",
-			"value": "${BIGIP2_EXAMPLE04_ADDRESS}",
 			"enabled": true
 		},
 		{
