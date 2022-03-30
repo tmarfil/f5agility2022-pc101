@@ -11,8 +11,8 @@ output "elb_dns_name" {
   value = aws_elb.example.dns_name
 }
 output "web1_address" {
-   value = aws_instance.example-a.private_ip
+  value = aws_instance.example-a.private_ip
 }
 output "web2_address" {
-   value = aws_instance.example-b.private_ip
+  value = aws_instance.example-b.private_ip
 }

@@ -36,17 +36,17 @@ variable "aws_keypair" {
   default     = "MyKeyPair-student@f5lab.dev"
 }
 variable "restrictedSrcAddress" {
-  type        = list
+  type        = list(any)
   description = "Lock down management access by source IP address or network"
   default     = ["0.0.0.0/0"]
 }
 variable "restrictedSrcAddressVPC" {
-  type        = list
+  type        = list(any)
   description = "Lock down management access by source IP address or network"
   default     = ["10.0.0.0/16"]
 }
 variable "bigip_admin" {
-  type = string
+  type    = string
   default = "admin"
 }
 

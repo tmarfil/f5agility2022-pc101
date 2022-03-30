@@ -1,7 +1,7 @@
 provider "aws" {
-  region = var.aws_region
-  shared_credentials_file = "~/.aws/config"
-  profile = "default"
+  region                   = var.aws_region
+  shared_credentials_files = ["~/.aws/config"]
+  profile                  = "default"
 }
 
 resource "aws_vpc" "terraform-vpc" {
@@ -99,7 +99,7 @@ resource "aws_route_table" "rt1" {
   }
 
   tags = {
-    Name = "Default"
+    Name                    = "Default"
     f5_cloud_failover_label = "mydeployment"
     #f5_self_ips tag used by f5 cloud failover iControl LX
     f5_self_ips = "${var.bigip1_private_ip[0]},${var.bigip2_private_ip[0]}"
@@ -164,7 +164,7 @@ resource "aws_instance" "example-a" {
   subnet_id                   = aws_subnet.public-a.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
   key_name                    = var.aws_keypair
-  private_ip = "10.0.1.80"
+  private_ip                  = "10.0.1.80"
   associate_public_ip_address = true
 
   user_data = <<-EOF
@@ -190,7 +190,7 @@ resource "aws_instance" "example-b" {
   subnet_id                   = aws_subnet.public-b.id
   vpc_security_group_ids      = [aws_security_group.instance.id]
   key_name                    = var.aws_keypair
-  private_ip = "10.0.2.80"
+  private_ip                  = "10.0.2.80"
   associate_public_ip_address = true
 
   user_data = <<-EOF
@@ -300,7 +300,7 @@ resource "aws_security_group" "f5_management" {
     cidr_blocks = var.restrictedSrcAddressVPC
   }
 
-    ingress {
+  ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -333,7 +333,7 @@ resource "aws_security_group" "f5_data" {
     cidr_blocks = var.restrictedSrcAddress
   }
 
-    ingress {
+  ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
